@@ -1,0 +1,66 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Overview
+{% endblock %}
+
+{% block main %}
+{% for char_id, dataset in data.items() %}
+    <div id="{{ dataset['name'] }}-{{ char_id }}" class="mb-3 mx-auto w-auto"></div>
+    <script>
+        // Convert Python lists to JavaScript arrays
+        var xValues{{ char_id }} = {{ dataset['xValues']|tojson }};
+        var yValues{{ char_id }} = {{ dataset['yValues']|tojson }};
+        var yLabels{{ char_id }} = {{ dataset['yLabels']|tojson }};
+
+        // Define trace for Plotly chart
+        var trace{{ char_id }} = {
+            x: xValues{{ char_id }},
+            y: yValues{{ char_id }},
+            mode: 'lines+markers',
+            type: 'scatter'
+        };
+
+        // Define layout for Plotly chart
+        {% if dataset['game'] == "SF6" %}
+            var layout{{ char_id }} = {
+                title: '{{ dataset["name"] }} - {{ dataset["game"] }}',
+                xaxis: { 
+                    title: 'Session',
+                    tickvals: xValues{{ char_id }}
+                },
+                yaxis: {
+                    title: 'Rank',
+                    range: [0, 25000],
+                    tickvals: [0, 1000, 3000, 5000, 9000, 13000, 19000, 25000],
+                    ticktext: ['Rookie 1', 'Iron 1', 'Bronze 1', 'Silver 1', 'Gold 1', 'Platinum 1', 'Diamond 1', 'Master']
+                },
+            };
+        {% elif dataset['game'] == "GBVSR" %}
+            var layout{{ char_id }} = {
+                title: '{{ dataset["name"] }} - {{ dataset["game"] }}',
+                xaxis: { 
+                    title: 'Session',
+                    tickvals: xValues{{ char_id }}
+                },
+                yaxis: {
+                    title: 'Rank',
+                    range: [37, 72],
+                    tickvals: [37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72],
+                    ticktext: ['D5', 'D4', 'D3', 'D2', 'D1', 'C5', 'C4', 'C3', 'C2', 'C1', 'B5', 'B4', 'B3', 'B2', 'B1', 'A5', 'A4', 'A3', 'A2', 'A1', 'S5', 'S4', 'S3', 'S2', 'S1', 'S+5', 'S+4', 'S+3', 'S+2', 'S+1', 'S++5', 'S++4', 'S++3', 'S++2', 'S++1', 'Master'],
+                    tickmode: 'array',
+                    tickformat: 'text'
+                },
+                height: 600
+            };
+        {% endif %}
+
+        // Combine trace and layout into data array
+        var data{{ char_id }} = [trace{{ char_id }}];
+
+        // Initialize Plotly chart
+        Plotly.newPlot('{{ dataset["name"] }}-{{ char_id }}', data{{ char_id }}, layout{{ char_id }}, { responsive: true });
+    </script>
+{% endfor %}
+    
+{% endblock %}

@@ -1,0 +1,38 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    History
+{% endblock %}
+
+{% block main %}
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th class="text-start">Game</th>
+                <th class="text-start">Character</th>
+                <th class="text-end">Rank</th>
+                <th class="text-center">Delete</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in rows %}
+                <tr>
+                    <td class="text-start">{{ row.game }}</td>
+                    <td class="text-start">{{ row.character }}</td>
+                    {% if row.game == "Street Fighter 6" %}
+                        <td class="text-end">{{ row.points }}</td>
+                    {% elif row.game == "Granblue Fantasy Versus: Rising" %}
+                        <td class="text-end">{{ row.rank }}</td>
+                    {% endif %}
+                    <td class="text-center align-middle">
+                        <form action="/history" method="post" class="d-inline" onsubmit="return confirm('Are you sure? This action is permanent.');">
+                            <input type="hidden" name="entry" value="{{ row.entry_no}}">
+                            <button class="btn btn-primary" type="submit">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

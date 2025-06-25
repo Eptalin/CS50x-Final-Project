@@ -1,0 +1,81 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Update Rank
+{% endblock %}
+
+{% block main %}
+    <form action="/add_entry" method="post">
+        <div class="mb-3">
+            <select name="character" id="selectCharacter" class="form-select mx-auto w-auto" onchange="loadForm()">
+                <option disabled selected>Character</option>
+                {% for character in characters %}
+                    <option value="{{ character['name'] }}" class="{{ character['game'] }}">{{ character['name'] }} - {{ character['game'] }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        
+        <!-- Street Fighter 6 -->
+        <div class="mb-3 game sf6" hidden>
+            <input name="points" class="form-control mx-auto w-auto" type="number" min="0" max="25000" placeholder="LP">
+        </div>
+        
+        <!-- Granblue Fantasy Versus: Rising -->
+        <div class="mb-3 game gbvsr" hidden>
+            <select name="rank" class="form-select mx-auto w-auto">
+                <option disabled selected>Select Rank</option>
+                {% for rank in ranksGBVSR %}
+                    <option value="{{ rank }}">{{ rank }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    
+        <div class="mb-3">
+            <button class="btn btn-primary" type="submit">Add Entry</button>
+        </div>
+    </form>
+{% endblock %}
+
+{% block content %}
+    <script>
+        function loadForm() {
+            // Hide elements for all games
+            let allGames = document.getElementsByClassName("game");
+            for (let i = 0; i < allGames.length; i++) {
+                let allElements = allGames[i].querySelectorAll("input, select, textarea");
+                allGames[i].setAttribute("hidden", "");
+                for (let j = 0; j < allElements.length; j++) {
+                    allElements[j].disabled = true;
+                }
+            }
+            // Get the class of the currently selected character
+            let selectElement = document.getElementById("selectCharacter");
+            let selectedOptionElement = selectElement.options[selectElement.selectedIndex];
+            let selectedGame = selectedOptionElement.className;
+
+            // Unhide Street Fighter 6 elements
+            if (selectedGame == "SF6") {
+                sf6 = document.getElementsByClassName("sf6");
+                for (let i = 0; i < sf6.length; i++) {
+                    let allElements = sf6[i].querySelectorAll("input, select, textarea");
+                    sf6[i].removeAttribute("hidden");
+                    for (let j = 0; j < allElements.length; j++) {
+                        allElements[j].disabled = false;
+                    }
+                }
+            }
+
+            // Unhide Granblue Fantasy Versus: Rising elements
+            if (selectedGame == "GBVSR") {
+                gbvsr = document.getElementsByClassName("gbvsr");
+                for (let i = 0; i < gbvsr.length; i++) {
+                let allElements = gbvsr[i].querySelectorAll("input, select, textarea");
+                    gbvsr[i].removeAttribute("hidden");
+                    for (let j = 0; j < allElements.length; j++) {
+                        allElements[j].disabled = false;
+                    }
+                }
+            }
+        }
+    </script>
+{% endblock %}

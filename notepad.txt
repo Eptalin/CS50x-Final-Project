@@ -1,0 +1,15 @@
+
+
+** QUERY TO FIND SF6 RANK USER QUALIFIES FOR **
+SELECT rankings.rank FROM rankings 
+    JOIN tracker ON rankings.game_id = tracker.game_id 
+    WHERE user_id = 1 AND tracker.points >= rankings.points 
+    ORDER BY rankings.id  DESC LIMIT 1;
+
+SELECT tracker.entry_no, games.name AS game, characters.character, rankings.rank, tracker.points 
+    FROM tracker 
+    JOIN games ON tracker.game_id = games.id 
+    JOIN characters ON characters.id = tracker.char_id 
+    LEFT JOIN rankings ON tracker.rank_id = rankings.id 
+    WHERE tracker.user_id = 1 
+    ORDER BY datetime DESC;
